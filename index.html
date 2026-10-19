@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Moneybags: returning to the app</title>
+<style>
+  body { font: 16px system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; background: #17603f; color: #fff; }
+  main { max-width: 28rem; padding: 1.5rem; text-align: center; }
+  a.btn { display: inline-block; margin-top: 1rem; padding: .6rem 1.2rem; border-radius: 8px; background: #f3d58f; color: #3b2a0a; font-weight: 600; text-decoration: none; }
+  .small { opacity: .8; font-size: .875rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Returning to Moneybags…</h1>
+  <p id="msg">Your bank sign-in is done. Opening the app.</p>
+  <a class="btn" id="open" href="moneybags://oauth" hidden>Open Moneybags</a>
+  <p class="small">This page only hands your bank's response to the Moneybags app on this computer. It stores and sends nothing.</p>
+</main>
+<script>
+  // Plaid sends the user here after the bank's OAuth sign-in, with the result
+  // in the query string (oauth_state_id=...). Hand the whole query to the app,
+  // which resumes Plaid Link with it.
+  const q = location.search;
+  const msg = document.getElementById('msg');
+  const btn = document.getElementById('open');
+  if (!/[?&]oauth_state_id=/.test(q)) {
+    msg.textContent = 'This page is the OAuth return address for Moneybags. There is nothing to do here.';
+  } else {
+    btn.href = 'moneybags://oauth' + q;
+    btn.hidden = false;
+    location.href = btn.href;
+    setTimeout(() => { msg.textContent = 'If the app did not open, make sure Moneybags is installed, then click the button.'; }, 2500);
+  }
+</script>
+</body>
+</html>
